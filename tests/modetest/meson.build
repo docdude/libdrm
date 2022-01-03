@@ -27,3 +27,13 @@ modetest = executable(
   link_with : [libdrm, libutil],
   install : with_install_tests,
 )
+
+modetest_mod = executable(
+  'modetest_mod',
+  files('buffers.c', 'cursor.c', 'modetest_mod.c'),
+  c_args : [libdrm_c_args, '-Wno-pointer-arith'],
+  include_directories : [inc_root, inc_tests, inc_drm],
+  dependencies : [dep_threads, dep_cairo],
+  link_with : [libdrm, libutil],
+  install : with_install_tests,
+)

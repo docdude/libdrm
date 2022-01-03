@@ -4,3 +4,10 @@ MODETEST_FILES := \
 	cursor.c \
 	cursor.h \
 	modetest.c
+
+MODETEST_MOD_FILES := \
+	buffers.c \
+	buffers.h \
+	cursor.c \
+	cursor.h \
+	modetest_mod.c
