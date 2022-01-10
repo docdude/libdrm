@@ -576,12 +576,18 @@ static const char *quant_range_str(uint32_t range)
 static void dump_active_connector(struct device *dev)
 {
 	int i, j;
-
+	drmModeModeInfo *mode = NULL;
+	char *mode_name = NULL;
+drmModeModeInfo *crtc_mode = NULL;
 	for (i = 0; i < dev->resources->count_connectors; i++) {
 		struct connector *_connector = &dev->resources->connectors[i];
 		drmModeConnector *connector = _connector->connector;
 		if (!connector)
 			continue;
+
+ 
+
+
 		if (strcmp(util_lookup_connector_status_name(connector->connection), "connected") == 0) {
 			printf("%s %d ", _connector->name, connector->connector_id);
 			if (_connector->props) {
@@ -597,20 +603,40 @@ static void dump_active_connector(struct device *dev)
 					}
 				}
 			}
+			for (i = 0; i < dev->resources->count_crtcs; i++) {
+							struct crtc *_crtc = &dev->resources->crtcs[i];
+				drmModeCrtc *crtc = _crtc->crtc;
+				if (!crtc)
+					continue;
+				if (crtc->mode_valid) {
+					printf("%d ", crtc->crtc_id);
+					//mode_name = crtc->mode.name;
+					crtc_mode = &crtc->mode;
+					break;
+				}
+			}
+			if (connector->count_modes) {
+				for (j = 0; j < connector->count_modes; j++) {
+					mode = &connector->modes[j];
+					if (strcmp(mode->name, crtc_mode->name) == 0) {
+			
+				//	printf("%s %s %f %f", mode->name, crtc_mode->name,mode_vrefresh(mode), mode_vrefresh(crtc_mode));
+						if (mode_vrefresh(crtc_mode) == 0)
+							dump_mode(&connector->modes[j], j);
+						else if (fabs(mode_vrefresh(mode) - mode_vrefresh(crtc_mode)) < 0.005)
+							dump_mode(&connector->modes[j], j);
+				
+					}
+				}
+			}
+			
+
 		}
 
+	}
 
-	}
-	for (i = 0; i < dev->resources->count_crtcs; i++) {
-		struct crtc *_crtc = &dev->resources->crtcs[i];
-		drmModeCrtc *crtc = _crtc->crtc;
-		if (!crtc)
-			continue;
-		if (crtc->buffer_id != 0) {
-			printf("%d %dx%d %.2fHz\n", crtc->crtc_id, crtc->width, crtc->height,  mode_vrefresh(&crtc->mode));
-		}
-	}
-	
+
+
 
 }
 

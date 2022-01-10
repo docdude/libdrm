@@ -112,7 +112,7 @@ option(
 option(
   'man-pages',
   type : 'combo',
-  value : 'auto',
+  value : 'false',
   choices : ['true', 'false', 'auto'],
   description : 'Enable manpage generation and installation.',
 )
@@ -132,12 +132,12 @@ option(
 option(
   'install-test-programs',
   type : 'boolean',
-  value : false,
+  value : true,
   description : 'Install test programs.',
 )
 option(
   'udev',
   type : 'boolean',
-  value : false,
+  value : true,
   description : 'Enable support for using udev instead of mknod.',
 )
